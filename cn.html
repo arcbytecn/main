@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArcByte</title>
+    <link rel="icon" href="./images/favicon.png" type="image/x-icon">
+    <style>
+        /* --- 全局样式与变量 --- */
+        :root {
+            --header-height: 64px;
+            --logo-height: 25px;
+            --nav-gap: 26px;
+            --safe-area-width: 1200px;
+            --bg-gray: #f8f8f8;
+            --text-dark: #1a1a1a;
+            --text-light: #ffffff;
+            --glass-bg: rgba(248, 249, 252, 0.7);
+            --border-color: #e6e6e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #fff;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--safe-area-width);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===================== 1. 导航栏 ===================== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background-color: #fff;
+            z-index: 8000;
+            transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        header.glass {
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 65px;
+            height: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo img {
+            height: var(--logo-height);
+            width: auto;
+            display: block;
+        }
+
+        .primary-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--nav-gap);
+            height: 100%;
+        }
+
+        .primary-menu > li {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .primary-menu > li > a {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 2px;
+            font-size: 14px;
+            font-weight: 470;
+            color: #1e1e1e;
+            letter-spacing: 0.01em;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+
+        .primary-menu > li > a:hover {
+            color: #004db3;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: var(--nav-gap);
+            height: 100%;
+        }
+
+        .nav-right a {
+            font-size: 14px;
+            font-weight: 450;
+            color: #1e1e1e;
+            transition: color 0.2s;
+        }
+
+        .nav-right a:hover {
+            color: #004db3;
+        }
+
+        /* ===================== 2. 全宽下拉菜单 ===================== */
+        .services-mega {
+            position: fixed;               /* 脱离文档流，全屏宽度 */
+            top: var(--header-height);      /* 紧贴导航栏底部 */
+            left: 0;
+            width: 100vw;                  /* 整条横向 */
+            background-color: #ffffff;
+            padding: 30px 0 34px 165px;    /* 左侧留空，让标题对齐 Home */
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.055);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+            z-index: 7999;
+            pointer-events: none;
+            border-top: 1px solid #efefef;
+        }
+
+        /* 鼠标悬浮在服务按钮上时显示 */
+        .menu-item-services:hover .services-mega {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .services-mega-inner {
+            max-width: var(--safe-area-width);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .services-mega h3 {
+            font-size: 20px;
+            font-weight: 610;
+            color: #0f0f0f;
+            margin-bottom: 18px;
+            letter-spacing: -0.01em;
+        }
+
+        .mega-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px 58px;
+        }
+
+        .mega-grid a {
+            display: inline-block;
+            padding: 6px 0;
+            font-size: 14px;
+            font-weight: 410;
+            color: #2a2a2a;
+            transition: color 0.17s;
+        }
+
+        .mega-grid a:hover {
+            color: #004db3;
+        }
+
+        /* ===================== 3. 主体内容 ===================== */
+        main {
+            margin-top: var(--header-height);
+        }
+
+        .hero-block {
+            background-color: var(--bg-gray);
+            min-height: calc(35vh - var(--header-height));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero-block h1 {
+            font-size: 52px;
+            font-weight: 500;
+            letter-spacing: -0.035em;
+            margin-bottom: 14px;
+            line-height: 1.1;
+        }
+
+        .hero-block .sub-cn {
+            font-size: 22px;
+            font-weight: 390;
+            color: #262626;
+        }
+
+        .ai-block {
+            background-color: #0a0a0a;
+            color: var(--text-light);
+            min-height: calc(75vh - var(--header-height));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .ai-block h2 {
+            font-size: 47px;
+            font-weight: 500;
+            letter-spacing: -0.045em;
+            margin-bottom: 10px;
+        }
+
+        .ai-block .ai-sub {
+            font-size: 22px;
+            font-weight: 390;
+            margin-bottom: 52px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 600px;
+            max-width: 100%;
+        }
+
+        .search-wrapper svg {
+            position: absolute;
+            left: 22px;
+            top: 49%;
+            transform: translateY(-51%);
+            width: 20px;
+            height: 20px;
+            stroke: #7a7a7a;
+            pointer-events: none;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 17px 53px 17px 52px;
+            border: none;
+            border-radius: 40px;
+            font-size: 15px;
+            background-color: #f2f2f2;
+            outline: none;
+            transition: box-shadow 0.25s;
+        }
+
+        .search-wrapper input:focus {
+            box-shadow: 0 0 0 3px rgba(220, 225, 235, 0.3);
+        }
+
+        .search-wrapper input::placeholder {
+            color: #999;
+            font-weight: 350;
+        }
+
+        /* ===================== 4. 底部法律信息 ===================== */
+        footer {
+            background-color: #f6f7f9;
+            padding: 62px 0 42px;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .legal-text {
+            max-width: var(--safe-area-width);
+            margin: 0 auto;
+            padding: 0 20px;
+            font-size: 11.5px;
+            color: #585858;
+            line-height: 1.82;
+        }
+
+        .legal-text p {
+            margin-bottom: 18px;
+        }
+
+        .legal-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 38px;
+            padding-top: 18px;
+            border-top: 1px solid #dcdcdc;
+            font-size: 11.5px;
+            color: #707070;
+        }
+
+        /* ===================== 5. 响应式 ===================== */
+        @media (max-width: 960px) {
+            .services-mega {
+                padding-left: 170px;
+            }
+            .nav-left {
+                gap: 68px;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .services-mega {
+                padding-left: 80px;
+            }
+            .primary-menu {
+                gap: 16px;
+            }
+            .primary-menu > li > a {
+                font-size: 12px;
+            }
+            .hero-block h1 {
+                font-size: 33px;
+            }
+            .ai-block h2 {
+                font-size: 29px;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .services-mega {
+                padding-left: 40px;
+            }
+            .mega-grid {
+                gap: 4px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header id="siteHeader">
+    <div class="container navbar">
+        <div class="nav-left">
+            <div class="logo">
+                <a href="https://www.arcbytecn.com/cn/" target="_blank">
+                    <img src="./images/logo.png" alt="ArcByte">
+                </a>
+            </div>
+            <ul class="primary-menu">
+                <li><a href="#">首页</a></li>
+                <li class="menu-item-services">
+                    <a href="#">服务</a>
+                    <div class="services-mega">
+                        <div class="services-mega-inner">
+                            <h3>服务</h3>
+                            <div class="mega-grid">
+                                <a href="https://www.arcbytecn.com/cn/maple-ai">ArcByte Maple AI</a>
+                                <a href="https://www.arcbytecn.com/cn/ancesports">Auraldynx NineCrest Esports</a>
+                                <a href="https://www.arcbytecn.com/cn/auth">ArcByte AUTH</a>
+                                <a href="https://www.arcbytecn.com/cn/global-services">ArcByte Global Services</a>
+                                <a href="https://www.arcbytecn.com/cn/esports">ArcByte Esports</a>
+                                <a href="https://www.arcbytecn.com/cn/vendor">ArcByte eShop</a>
+                                <a href="https://www.arcbytecn.com/cn/go">ArcByte GO</a>
+                                <a href="https://www.arcbytecn.com/cn/oa">ArcByte OA</a>
+                                <a href="https://www.arcbytecn.com/cn/support">ArcByte Support</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <a href="https://account.arcbytecn.com/">登入</a>
+            <a href="https://status.arcbytecn.com/">状态</a>
+            <a href="https://www.arcbytecn.com/cn">EN</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="hero-block">
+        <h1>With ambition, we innovate.</h1>
+        <div class="sub-cn">怀揣壮志，敢为人先。</div>
+    </section>
+
+    <section class="ai-block">
+        <h2>跟我们一起探索世界。</h2>
+        <div class="ai-sub">与 ArcByte Maple AI 对话。</div>
+        <div class="search-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="aiSearch" placeholder="点击输入您的问题">
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="legal-text">
+        <p>
+            ArcByte™ 是 ArcByte 独家拥有的全球公认注册商标。我们的官方注册号为 91964184 (TMZC000000919641842CS001) 和 91964185 (TMZC00000091964185CS001)。未经明确书面许可，严禁擅自使用、复制或分发 ArcByte 品牌、标识或相关知识产权；任何侵权行为都将导致 ArcByte Limited 立即采取法律行动，并正式申请以保护我们的权利。
+        </p>
+        <p>
+            ArcByte徐汇的注册运营总部位于中国上海市南宁路970弄徐汇万科中心B座。ArcByte GO及所有相关的ArcByte网络服务已在中国上海市国家市场监督管理总局正式注册并获得许可，ICP备案号为沪ICP备2026017287号-1X（运营名称：ArcByte™）。尽管我们实施了严格的安全协议和合理的预防措施，以确保我们的平台和产品免受恶意软件和病毒的侵害，但我们强烈建议用户在访问或下载我们服务中的任何内容之前，自行进行独立的安全性和病毒扫描。在适用法律允许的最大范围内，ArcByte明确声明，对于因使用我们的服务而引起的或与之相关的任何直接、间接、附带或后果性损失、损害或数据泄露，不承担任何责任。
+        </p>
+        <div class="legal-foot">
+            <span>Copyright © 2026 ArcByte. 保留所有权益.</span>
+            <span>简体中文（中国大陆）</span>
+        </div>
+        <p>
+        </p>
+    </div>
+</footer>
+
+<script>
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 6) {
+            header.classList.add('glass');
+        } else {
+            header.classList.remove('glass');
+        }
+    });
+
+    const inputField = document.getElementById('aiSearch');
+    inputField.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const val = inputField.value.trim();
+            if (val) {
+                window.location.href = `https://maple.arcbytecn.com/ask/${encodeURIComponent(val)}`;
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
